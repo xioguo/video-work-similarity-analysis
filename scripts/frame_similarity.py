@@ -75,33 +75,21 @@ def main():
     parser.add_argument('--interval-b', type=float)
     args = parser.parse_args()
     config = json.loads(args.config.read_text(encoding='utf-8')) if args.config.exists() else {}
-    if config.get('component_scores') and config.get('formula_version') != '四项加权v2.1' and args.component_scores is None:
-        parser.error('Old/unversioned D4 may be character-only. Reverify semantic text coverage and provide --component-scores explicitly before saving v2.1 config.')
+    if args.component_scores is not None or args.weights is not None or config.get('component_scores') is not None or config.get('weights') is not None:
+        parser.error('Old composite interface retired: pixel scores are screening only. Migrate content aggregation to content-v3 (structure/actions/semantic text 37.5/37.5/25), and save a screening-only config without weights/component_scores.')
     for field in ('a_frames', 'b_frames', 'output', 'weights', 'component_scores', 'interval_a', 'interval_b'):
         if getattr(args, field) is None and field in config:
             setattr(args, field, Path(config[field]) if field in ('a_frames', 'b_frames', 'output') else config[field])
     if not all((args.a_frames, args.b_frames, args.output)):
         parser.error('Provide A/B frame directories and output, or a saved config')
-    args.weights = args.weights or '30,30,20,20'
     if any(x is not None and x <= 0 for x in (args.interval_a, args.interval_b)):
         parser.error('Sampling intervals must be positive seconds')
     if args.output.resolve().parent in {args.a_frames.resolve(), args.b_frames.resolve()}:
         parser.error('Save derived output separately from source frame directories')
     result = compare(features(args.a_frames), features(args.b_frames))
-    if args.component_scores:
-        weights = [float(x) for x in args.weights.split(',')]
-        scores = [float(x) for x in args.component_scores.split(',')]
-        if len(weights) != 4 or len(scores) not in (3, 4) or not all(math.isfinite(x) for x in weights + scores) or min(weights) < 0 or sum(weights) <= 0 or any(not 0 <= x <= 100 for x in scores):
-            parser.error('Expected four nonnegative weights with positive sum and three/four percentages')
-        if len(scores) == 4 and abs(scores[3] - result['pixel_summary']['mean']) > 0.00001:
-            parser.error('D5 component must equal computed pixel mean; prefer three scores and calculate D5 live')
-        scores = scores[:3] + [result['pixel_summary']['mean']]
-        normalized = [x / sum(weights) for x in weights]
-        combined = sum(w * score for w, score in zip(normalized, scores))
-        result['composite'] = {'version': '四项加权v2.1', 'order': ['D1', 'D2', 'D4', 'D5_pixel'], 'normalized_weights_percent': [x * 100 for x in normalized], 'component_scores': scores, 'component_definitions': ['beat recurrence', 'expressive action count recurrence', 'verified A semantic text union coverage', 'sampled RGB pixel closeness'], 'score': combined, 'internal_review_threshold': 60, 'exceeds_threshold': combined > 60, 'limitation': 'Internal review score, not statistically validated plagiarism probability. D5 alone does not use the 60 percent threshold. Record each denominator in report.'}
     if args.save_config:
         saved = {field: str(getattr(args, field).resolve()) for field in ('a_frames', 'b_frames', 'output')}
-        saved.update({'weights': args.weights, 'component_scores': ','.join(args.component_scores.split(',')[:3]) if args.component_scores else None, 'interval_a': args.interval_a, 'interval_b': args.interval_b, 'formula_version': '四项加权v2.1'})
+        saved.update({'interval_a': args.interval_a, 'interval_b': args.interval_b, 'method_version': 'material-screening-v1'})
         args.config.parent.mkdir(parents=True, exist_ok=True)
         args.config.write_text(json.dumps(saved, ensure_ascii=False, indent=2), encoding='utf-8')
     result['sampling_interval_seconds'] = {'a': args.interval_a, 'b': args.interval_b}
