@@ -1,0 +1,56 @@
+{
+  "schema_version": "case-v1",
+  "workflow_version": "workflow-v1",
+  "method_version": "content-v3",
+  "case_id": "构造同义示例",
+  "dataset_type": "synthetic",
+  "works": {
+    "A": {
+      "title": "A构造样例",
+      "url": "",
+      "published_at": "",
+      "video": null,
+      "duration_seconds": 5,
+      "transcript": "A-转写.txt",
+      "transcript_complete": true,
+      "frames_manifest": null,
+      "cover": null,
+      "cover_unavailable_reason": "构造样例不含视频或封面",
+      "preview_video": null
+    },
+    "B": {
+      "title": "B构造样例",
+      "url": "",
+      "published_at": "",
+      "video": null,
+      "duration_seconds": 5,
+      "transcript": "B-转写.txt",
+      "transcript_complete": true,
+      "frames_manifest": null,
+      "cover": null,
+      "cover_unavailable_reason": "构造样例不含视频或封面",
+      "preview_video": null
+    }
+  },
+  "annotations": "人工标注.json",
+  "material_screening": null,
+  "visual_reviews": [],
+  "cover_review": null,
+  "findings": [],
+  "sampling": {
+    "interval_seconds": 5,
+    "override_reason": ""
+  },
+  "source_review": {
+    "status": "blocked",
+    "notes": "尚未核验发布时间及公共来源",
+    "evidence_files": []
+  },
+  "blocked_steps": [],
+  "limitations": [],
+  "analysis_model": {
+    "id": null,
+    "source": "unavailable",
+    "contributors": []
+  }
+}
