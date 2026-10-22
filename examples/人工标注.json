@@ -1,0 +1,87 @@
+{
+  "method_version": "content-v3",
+  "A_units": [
+    {
+      "id": "a01",
+      "time": "00:00–00:05",
+      "text": "无需花钱",
+      "attribute": "E",
+      "group": "a01",
+      "exclude_reason": null,
+      "requirements": [
+        {
+          "key": "free",
+          "meaning": "使用无需付费",
+          "matched": true,
+          "evidence": [
+            {
+              "id": "b01",
+              "time": "00:00–00:05",
+              "text": "不用付费"
+            }
+          ]
+        }
+      ],
+      "text_coverage": {
+        "total_chars": 4,
+        "matched_chars": 4,
+        "spans": [
+          {
+            "original_span": "无需花钱",
+            "normalized_start": 0,
+            "normalized_end_exclusive": 4,
+            "supporting_other_units": [
+              "b01"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "B_units": [
+    {
+      "id": "b01",
+      "time": "00:00–00:05",
+      "text": "不用付费",
+      "attribute": "E",
+      "group": "b01",
+      "exclude_reason": null,
+      "requirements": [
+        {
+          "key": "free",
+          "meaning": "使用无需付费",
+          "matched": true,
+          "evidence": [
+            {
+              "id": "a01",
+              "time": "00:00–00:05",
+              "text": "无需花钱"
+            }
+          ]
+        }
+      ],
+      "text_coverage": {
+        "total_chars": 4,
+        "matched_chars": 4,
+        "spans": [
+          {
+            "original_span": "不用付费",
+            "normalized_start": 0,
+            "normalized_end_exclusive": 4,
+            "supporting_other_units": [
+              "a01"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "structure_pairs": [
+    {
+      "a_id": "a01",
+      "b_id": "b01",
+      "shared_action": "说明免费",
+      "boundary": "构造同义，无真实创作来源主张"
+    }
+  ]
+}
